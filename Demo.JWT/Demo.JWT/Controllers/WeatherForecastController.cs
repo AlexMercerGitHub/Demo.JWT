@@ -24,11 +24,62 @@ namespace Demo.JWT.Controllers
 
         [Route("/api/Authorize")]
         [HttpGet]
-        [Authorize]
-        public  dynamic Authorize()
+        [Authorize(Roles = "Admin,admin2")]
+        //[Authorize(Policy = "Client")]
+        public dynamic Authorize()
         {
+            var a = SerializeJwt(HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
 
             return "有权限获取";
+        }
+
+        /// <summary>
+        /// 解析
+        /// </summary>
+        /// <param name="jwtStr"></param>
+        /// <returns></returns>
+        public static TokenModelJwt SerializeJwt(string jwtStr)
+        {
+            var jwtHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(jwtStr);
+            object role;
+            try
+            {
+                jwtToken.Payload.TryGetValue(ClaimTypes.Role, out role);
+                jwtToken.Payload.TryGetValue("测试字段", out role);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            var tm = new TokenModelJwt
+            {
+                Uid = Convert.ToInt32((jwtToken.Id)),
+                Role = role != null ? role.ToString() : "",
+            };
+            return tm;
+        }
+
+        /// <summary>
+        /// 令牌
+        /// </summary>
+        public class TokenModelJwt
+        {
+            /// <summary>
+            /// Id
+            /// </summary>
+            public long Uid { get; set; }
+            /// <summary>
+            /// 角色
+            /// </summary>
+            public string Role { get; set; }
+            /// <summary>
+            /// 职能
+            /// </summary>
+            public string Work { get; set; }
+            public string Name { get; set; }
+
         }
         // [AllowAnonymous] 是什么意思
 
@@ -41,7 +92,9 @@ namespace Demo.JWT.Controllers
             {
                     new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
                     new Claim (Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddMinutes(30)).ToUnixTimeSeconds()}"),
-                    new Claim(ClaimTypes.Name, "测试jwt")
+                    new Claim(ClaimTypes.Name, "测试jwt"),
+                     new Claim("测试字段","哈哈哈"),
+                    new Claim(ClaimTypes.Role,"Admin")
                 };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Const.SecurityKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -3547,11 +3547,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\VueProject\\GitProject\\laozhang\\Demo.JWT\\Demo.JWT\\Demo.JWT.csproj",
+      "projectUniqueName": "D:\\VueProject\\GitProject\\github\\Demo.JWT\\Demo.JWT\\Demo.JWT\\Demo.JWT.csproj",
       "projectName": "Demo.JWT",
-      "projectPath": "D:\\VueProject\\GitProject\\laozhang\\Demo.JWT\\Demo.JWT\\Demo.JWT.csproj",
+      "projectPath": "D:\\VueProject\\GitProject\\github\\Demo.JWT\\Demo.JWT\\Demo.JWT\\Demo.JWT.csproj",
       "packagesPath": "C:\\Users\\xinxi02\\.nuget\\packages\\",
-      "outputPath": "D:\\VueProject\\GitProject\\laozhang\\Demo.JWT\\Demo.JWT\\obj\\",
+      "outputPath": "D:\\VueProject\\GitProject\\github\\Demo.JWT\\Demo.JWT\\Demo.JWT\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

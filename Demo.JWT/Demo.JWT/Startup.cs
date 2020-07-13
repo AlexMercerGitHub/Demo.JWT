@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Demo.JWT
@@ -46,6 +47,15 @@ namespace Demo.JWT
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Const.SecurityKey))//拿到SecurityKey
                    };
                });
+            // 1【授权】、这个和上边的异曲同工，好处就是不用在controller中，写多个 roles 。
+            // 然后这么写 [Authorize(Policy = "Admin")]
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Client", policy => policy.RequireRole("Client").Build());//单独角色
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin").Build());
+                options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));//或的关系
+                options.AddPolicy("SystemAndAdmin", policy => policy.RequireRole("Admin").RequireRole("System"));//且的关系
+            });
 
         }
 
@@ -56,7 +66,7 @@ namespace Demo.JWT
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            //IdentityModelEventSource.ShowPII = true;
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
